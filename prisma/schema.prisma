@@ -1,0 +1,80 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  USUARIO
+}
+
+model Usuario {
+  id         String      @id @default(cuid())
+  email      String      @unique
+  senhaHash  String
+  nome       String
+  role       Role        @default(USUARIO)
+  criadoEm   DateTime    @default(now())
+  historicos Historico[]
+  conversas  Conversa[] // Relacionamento com Conversa
+}
+
+model Gesto {
+  id        String       @id @default(cuid())
+  nome      String
+  descricao String?
+  tipo      String
+  pontosRef Json // Dados de referência dos landmarks
+  criadoEm  DateTime     @default(now())
+  traducoes Tradução[]
+  historico Historico[]
+}
+
+model Tradução {
+  id        String   @id @default(cuid())
+  gestoId   String
+  texto     String
+  linguagem String // Ex: "pt-BR"
+  audioPath String?
+  criadoEm  DateTime @default(now())
+
+  gesto Gesto @relation(fields: [gestoId], references: [id])
+}
+
+model Historico {
+  id            String   @id @default(cuid())
+  gestoId       String
+  usuarioId     String
+  reconhecidoEm DateTime @default(now())
+
+  gesto   Gesto   @relation(fields: [gestoId], references: [id])
+  usuario Usuario @relation(fields: [usuarioId], references: [id])
+}
+
+model Conversa {
+  id        String     @id @default(cuid())
+  usuarioId String
+  mensagens Mensagem[]
+  criadaEm  DateTime   @default(now())
+
+  usuario Usuario @relation(fields: [usuarioId], references: [id])
+}
+
+model Mensagem {
+  id         String         @id @default(cuid())
+  conversaId String
+  texto      String
+  origem     OrigemMensagem // USUARIO ou SISTEMA
+  criadoEm   DateTime       @default(now())
+
+  conversa Conversa @relation(fields: [conversaId], references: [id])
+}
+
+enum OrigemMensagem {
+  USUARIO
+  SISTEMA
+}

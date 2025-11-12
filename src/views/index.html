@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="pt">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Reconhecedor de Libras</title>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: sans-serif;
+        background: #f9fafb;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        margin: 0;
+        padding: 1rem;
+      }
+
+      .container {
+        background: white;
+        padding: 2rem;
+        border-radius: 1.5rem;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        max-width: 720px;
+        text-align: center;
+        position: relative;
+      }
+
+      .video-wrapper {
+        position: relative;
+        width: 100%;
+        aspect-ratio: 4 / 3;
+        margin-bottom: 1rem;
+      }
+
+      video,
+      canvas {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        border-radius: 0.75rem;
+        border: 1px solid #ddd;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+      }
+
+      .frase {
+        margin-top: 1rem;
+        font-size: 1.2rem;
+        color: #6366f1;
+      }
+
+      button {
+        margin: 0.5rem;
+        padding: 0.5rem 1.2rem;
+        border: none;
+        border-radius: 0.5rem;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: background 0.2s;
+      }
+
+      .btn-falar {
+        background: #6366f1;
+        color: white;
+      }
+
+      .btn-falar:hover {
+        background: #4f46e5;
+      }
+
+      .btn-limpar {
+        background: #e5e7eb;
+        color: #111827;
+      }
+
+      .btn-limpar:hover {
+        background: #d1d5db;
+      }
+
+      @media (max-width: 500px) {
+        .frase {
+          font-size: 1rem;
+        }
+
+        button {
+          font-size: 0.9rem;
+          padding: 0.4rem 1rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Tradutor de Libras em Tempo Real</h1>
+      <div class="video-wrapper">
+        <video
+          id="webcam"
+          autoplay
+          muted
+          playsinline
+          width="640"
+          height="480"
+        ></video>
+        <canvas id="outputCanvas" width="640" height="480"></canvas>
+      </div>
+      <p class="frase" id="fraseAtual">Frase atual: ...</p>
+      <div>
+        <button class="btn-falar" onclick="falarFrase()">Falar</button>
+        <button class="btn-limpar" onclick="limparFrase()">Limpar</button>
+      </div>
+    </div>
+    <div id="debug">Aguardando captura...</div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.11.2/math.min.js"></script>
+    <script src="./../scripts/reconhecimento.js"></script>
+  </body>
+</html>
